@@ -1,0 +1,14 @@
+#import "../fragments/wishlistFragment.gql"
+
+mutation WishListRemoveProduct($id: ID!) {
+  wishlistRemoveProduct(productId: $id) {
+    wishlist {
+      ...wishlistFragment
+    }
+    wishlistError {
+      field
+      message
+      code
+    }
+  }
+}

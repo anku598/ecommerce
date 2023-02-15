@@ -1,0 +1,13 @@
+#import "../fragments/checkoutFragment.gql"
+
+mutation RemovePromoCode($id: ID!, $code: String!){
+  checkoutRemovePromoCode(checkoutId: $id, promoCode: $code){
+    checkout {
+      ...CheckoutFragment
+    }
+    checkoutErrors {
+      code
+      message
+    }
+  }
+}

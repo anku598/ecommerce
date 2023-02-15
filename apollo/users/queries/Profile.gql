@@ -1,0 +1,15 @@
+#import "../fragments/profileFragment.gql"
+#import "../fragments/checkoutFragment.gql"
+#import "../fragments/wishlistFragment.gql"
+
+query Profile {
+  me {
+    ...ProfileFragment
+    checkout {
+      ...CheckoutFragment
+    }
+    wishlist {
+      ...wishlistFragment
+    }
+  }
+}

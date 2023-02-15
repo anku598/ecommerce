@@ -1,0 +1,42 @@
+#import "./BasicProductFields.gql"
+#import "../../common/fragments/PageInfo.gql"
+#import "./Price.gql"
+
+fragment ProductListFragment on ProductCountableConnection {
+  pageInfo {
+    ...PageInfo
+  }
+  totalCount
+  edges {
+    cursor
+    node {
+      ...BasicProductFields
+      imgOriginal: images {
+        url(rendition: "fill-420x560")
+        alt
+      }
+      imgMobile: images {
+        url(rendition: "fill-200x266")
+      }
+      pricing {
+        onSale
+        priceRange {
+          start {
+            ...Price
+          }
+          stop {
+            ...Price
+          }
+        }
+        priceRangeUndiscounted {
+          start {
+            ...Price
+          }
+          stop {
+            ...Price
+          }
+        }
+      }
+    }
+  }
+}

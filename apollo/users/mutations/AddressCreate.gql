@@ -1,0 +1,15 @@
+#import "../fragments/addressFragment.gql"
+
+mutation AddressCreate($input: AddressInput!, $type: AddressTypeEnum) {
+  operation: accountAddressCreate(input: $input, type: $type) {
+    address {
+      id
+      ...AddressFragment
+    }
+    accountErrors {
+      field
+      code
+      message
+    }
+  }
+}

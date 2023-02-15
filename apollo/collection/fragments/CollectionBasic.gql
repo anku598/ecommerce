@@ -1,0 +1,11 @@
+#import "../../common/fragments/Metadata.gql"
+
+fragment CollectionBasic on Collection {
+  id
+  name
+  slug
+  isPublished
+  metadata {
+    ...Metadata
+  }
+}

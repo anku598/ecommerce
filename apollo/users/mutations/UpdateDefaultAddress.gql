@@ -1,0 +1,7 @@
+mutation UpdateDefaultAddress($id: ID!, $type: AddressTypeEnum!) {
+  accountSetDefaultAddress(id: $id, type: $type) {
+    user {
+      id
+    }
+  }
+}

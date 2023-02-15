@@ -1,0 +1,80 @@
+#import "../fragments/CollectionBasic.gql"
+#import "../../common/fragments/AttributeBasic.gql"
+#import "../../category/fragments/CategoryBasic.gql"
+#import "../../common/fragments/AttributeValueBasic.gql"
+query Collection($slug: String) {
+  collection(slug: $slug) {
+    ...CollectionBasic
+    seoTitle
+    seoDescription
+    ogImage: backgroundImage(rendition: "fill-852x315") {
+      url
+      alt
+    }
+  }
+  attributes(
+    first: 100
+    filter: {
+      filterableInStorefront: true
+      inCollectionBySlug: $slug
+      stockOnly: true
+    }
+  ) {
+    edges {
+      node {
+        ...AttributeBasic
+        values(stockOnly: true, collection: $slug) {
+          ...AttributeValueBasic
+        }
+      }
+    }
+  }
+  categories(first: 100, filter: { inCollectionBySlug: $slug }) {
+    edges {
+      node {
+        ...CategoryBasic
+        level
+        products(filter: { collectionsBySlug: [$slug] }) {
+          totalCount
+        }
+        parent {
+          ...CategoryBasic
+          level
+          ancestors(first: 10) {
+            edges {
+              node {
+                ...CategoryBasic
+                level
+              }
+            }
+          }
+        }
+        children(first: 100) {
+          edges {
+            node {
+              ...CategoryBasic
+              level
+              products(filter: { collectionsBySlug: [$slug] }) {
+                totalCount
+              }
+              children(first: 100) {
+                edges {
+                  node {
+                    ...CategoryBasic
+                    products(filter: { collectionsBySlug: [$slug] }) {
+                      totalCount
+                    }
+                    backgroundImage(size: 120) {
+                      url
+                      alt
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

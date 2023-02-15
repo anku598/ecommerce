@@ -1,0 +1,7 @@
+fragment AttributeValueBasic on AttributeValue {
+  id
+  slug
+  name
+  value
+  hasProducts
+}

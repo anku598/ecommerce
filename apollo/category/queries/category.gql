@@ -1,0 +1,77 @@
+#import "../fragments/CategoryBasic.gql"
+#import "../../collection/fragments/CollectionBasic.gql"
+#import "../../common/fragments/Metadata.gql"
+#import "../../common/fragments/AttributeBasic.gql"
+#import "../../common/fragments/AttributeValueBasic.gql"
+query Category($slug: String) {
+  category(slug: $slug) {
+    ...CategoryBasic
+    seoTitle
+    seoDescription
+    ogImage: backgroundImage(rendition: "fill-852x315") {
+      url
+      alt
+    }
+
+    children(first: 100) {
+      edges {
+        node {
+          ...CategoryBasic
+          products {
+            totalCount
+          }
+          backgroundImage(size: 120) {
+            url
+            alt
+          }
+          children(first: 100) {
+            edges {
+              node {
+                ...CategoryBasic
+                products {
+                  totalCount
+                }
+                backgroundImage(size: 120) {
+                  url
+                  alt
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  attributes(
+    first: 100
+    filter: {
+      filterableInStorefront: true
+      inCategoryBySlug: $slug
+      stockOnly: true
+    }
+  ) {
+    edges {
+      node {
+        ...AttributeBasic
+        values(stockOnly: true, category: $slug) {
+          ...AttributeValueBasic
+        }
+      }
+    }
+  }
+
+  collections(
+    first: 100
+    filter: { inCategoryBySlug: $slug, published: PUBLISHED }
+  ) {
+    edges {
+      node {
+        ...CollectionBasic
+        products(filter: { categoriesBySlug: [$slug] }) {
+          totalCount
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+#import "../../common/fragments/Metadata.gql"
+#import "../../category/fragments/CategoryBasic.gql"
+query Product($slug: String){
+  product(slug: $slug) {
+    id
+    name
+
+    images {
+      url
+      alt
+    }
+    metadata {
+      ...Metadata
+    }
+    category {
+      ...CategoryBasic
+    }
+  }
+}

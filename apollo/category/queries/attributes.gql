@@ -1,0 +1,26 @@
+query Attributes($slug: String) {
+  attributes(
+    first: 100
+    filter: {
+      filterableInStorefront: true
+      inCategoryBySlug: $slug
+      stockOnly: true
+    }
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        isColor
+        values {
+          id
+          slug
+          name
+          value
+          hasProducts
+        }
+      }
+    }
+  }
+}

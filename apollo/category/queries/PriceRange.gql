@@ -1,0 +1,28 @@
+query CategoryPriceRange($id: ID!) {
+  min: products(
+    first: 1
+    filter: { categories: [$id] }
+    sortBy: { field: PRICE, direction: ASC }
+  ) {
+    edges {
+      node {
+        minimalVariantPrice {
+          amount
+        }
+      }
+    }
+  }
+  max: products(
+    first: 1
+    filter: { categories: [$id] }
+    sortBy: { field: PRICE, direction: DESC }
+  ) {
+    edges {
+      node {
+        minimalVariantPrice {
+          amount
+        }
+      }
+    }
+  }
+}

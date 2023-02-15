@@ -1,0 +1,11 @@
+#import "../fragments/wishlistFragment.gql"
+
+query Cart {
+  me {
+    id
+    email
+    wishlist {
+      ...wishlistFragment
+    }
+  }
+}

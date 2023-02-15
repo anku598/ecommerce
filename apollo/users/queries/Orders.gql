@@ -1,0 +1,19 @@
+#import "../fragments/orderFragment.gql"
+#import "../../common/fragments/PageInfo.gql"
+
+query Orders($after: String, $pageSize: Int) {
+  me {
+    id
+    orders(after: $after, first: $pageSize) {
+      edges {
+        node {
+          ...OrderFragment
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+      totalCount
+    }
+  }
+}

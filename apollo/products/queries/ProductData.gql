@@ -1,0 +1,95 @@
+#import "../fragments/Price.gql"
+#import "../fragments/AttributesFragment.gql"
+#import "../fragments/VariantFragment.gql"
+#import "../../collection/fragments/CollectionBasic.gql"
+#import "../../category/fragments/CategoryBasic.gql"
+#import "../../common/fragments/Metadata.gql"
+
+query ProductData($slug: String) {
+  product(slug: $slug) {
+    id
+    slug
+    name
+    sku
+    descriptionJson
+    seoTitle
+    seoDescription
+    isAvailable
+    isAvailableForPurchase
+
+    collections {
+      ...CollectionBasic
+    }
+
+    attributes {
+      ...AttributesFragment
+    }
+
+    # images {
+    #   url
+    #   alt
+    # }
+
+    ogImage: thumbnail(rendition: "fill-852x315") {
+      url
+    }
+
+    originalImg: images {
+      url
+      alt
+    }
+    optimalImg: images {
+      url(rendition: "width-1920")
+    }
+    mobileZoomImg: images {
+      url(rendition: "width-400")
+    }
+    defaultImg: images {
+      url(rendition: "fill-610x850")
+      alt
+    }
+    mobileImg: images {
+      url(rendition: "fill-420x560")
+      alt
+    }
+
+    category {
+      ...CategoryBasic
+      sizeChart(rendition: "width-500")
+    }
+
+    pricing {
+      onSale
+      discountLocalCurrency {
+        ...Price
+      }
+      priceRange {
+        stop {
+          ...Price
+        }
+        start {
+          ...Price
+        }
+      }
+      priceRangeUndiscounted {
+        stop {
+          ...Price
+        }
+        start {
+          ...Price
+        }
+      }
+    }
+
+    defaultVariant {
+      ...VariantFragment
+    }
+
+    variants {
+      ...VariantFragment
+    }
+    metadata {
+      ...Metadata
+    }
+  }
+}

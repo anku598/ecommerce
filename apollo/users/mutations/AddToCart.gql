@@ -1,0 +1,13 @@
+#import "../fragments/checkoutFragment.gql"
+
+mutation AddToCart($id: ID!, $input: [CheckoutLineInput]!) {
+  checkoutLinesAdd(checkoutId: $id, lines: $input) {
+    checkout {
+      ...CheckoutFragment
+    }
+    checkoutErrors {
+      code
+      message
+    }
+  }
+}

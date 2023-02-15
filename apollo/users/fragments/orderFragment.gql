@@ -1,0 +1,37 @@
+#import "./addressFragment.gql"
+#import "../../products/fragments/Price.gql"
+#import "./orderLineFragment.gql"
+
+fragment OrderFragment on Order {
+  __typename
+  id
+  number
+  created
+  status
+  statusDisplay
+  lines {
+    ...OrderLineFragment
+  }
+  user {
+    firstName
+    lastName
+    email
+  }
+  billingAddress {
+    ...AddressFragment
+  }
+  shippingAddress {
+    ...AddressFragment
+  }
+  shippingMethodName
+  total {
+    ...Price
+  }
+  shippingPrice {
+    ...Price
+  }
+  paymentStatusDisplay
+  subtotal {
+    ...Price
+  }
+}

@@ -1,0 +1,63 @@
+#import "../../common/fragments/AttributeValueBasic.gql"
+#import "../../common/fragments/AttributeBasic.gql"
+#import "../fragments/AttributeBasic.gql"
+
+query GenderCategory($slug: String) {
+  category(slug: $slug) {
+    ...CategoryBasic
+    children(first: 100) {
+      edges {
+        node {
+          ...CategoryBasic
+          backgroundImage(size: 120) {
+            url
+            alt
+          }
+          children(first: 100) {
+            edges {
+              node {
+                ...CategoryBasic
+                products {
+                  totalCount
+                }
+                backgroundImage(size: 120) {
+                  url
+                  alt
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  attributes(
+    first: 100
+    filter: {
+      filterableInStorefront: true
+      inCategoryBySlug: $slug
+      stockOnly: true
+    }
+  ) {
+    edges {
+      node {
+        ...AttributeBasic
+        values(stockOnly: true, category: $slug) {
+          ...AttributeValueBasic
+        }
+      }
+    }
+  }
+  collections(first: 100) {
+    edges {
+      node {
+        id
+        name
+        slug
+        products(filter: { categoriesBySlug: [$slug] }) {
+          totalCount
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation requestConfirmationEmail($input: ResendConfirmationEmailInput!) {
+  requestConfirmationEmail(input: $input) {
+    status
+  }
+}

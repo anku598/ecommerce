@@ -1,0 +1,26 @@
+// Fonts
+ @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+@font-face {
+  font-family: 'Aileron-Bold';
+  src: url('~@/assets/fonts/Aileron-Bold.eot?#iefix') format('embedded-opentype'),
+    url('~@/assets/fonts/Aileron-Bold.woff') format('woff'), url('~@/assets/fonts/Aileron-Bold.ttf') format('truetype'), url('~@/assets/fonts/Aileron-Bold.svg#Aileron-Bold') format('svg');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+$font-family-base: 'Aileron-Bold',
+-apple-system,
+BlinkMacSystemFont,
+'Segoe UI',
+Roboto,
+Helvetica,
+Arial,
+sans-serif,
+'Apple Color Emoji',
+'Segoe UI Emoji',
+'Segoe UI Symbol';
+
+$font-family-h: 'Roboto';
+$app-width:95vmin;

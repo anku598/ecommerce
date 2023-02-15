@@ -1,0 +1,11 @@
+#import "../fragments/checkoutFragment.gql"
+
+query Cart {
+  me {
+    id
+    email
+    checkout {
+      ...CheckoutFragment
+    }
+  }
+}

@@ -1,0 +1,67 @@
+#import "../fragments/CategoryBasic.gql"
+#import "../../common/fragments/AttributeBasic.gql"
+#import "../../common/fragments/AttributeValueBasic.gql"
+#import "../../collection/fragments/CollectionBasic.gql"
+query Categories {
+  categories(first: 10, level: 0) {
+    edges {
+      node {
+        ...CategoryBasic
+        products {
+          totalCount
+        }
+        children(first: 100) {
+          edges {
+            node {
+              ...CategoryBasic
+              products {
+                totalCount
+              }
+              backgroundImage(size: 120) {
+                url
+                alt
+              }
+              children(first: 100) {
+                edges {
+                  node {
+                    ...CategoryBasic
+                    products {
+                      totalCount
+                    }
+                    backgroundImage(size: 120) {
+                      url
+                      alt
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  attributes(
+    first: 100
+    filter: { filterableInStorefront: true, stockOnly: true }
+  ) {
+    edges {
+      node {
+        ...AttributeBasic
+        values(stockOnly: true) {
+          ...AttributeValueBasic
+        }
+      }
+    }
+  }
+  collections(first: 100, filter: { published: PUBLISHED }) {
+    edges {
+      node {
+        ...CollectionBasic
+        products {
+          totalCount
+        }
+      }
+    }
+  }
+}

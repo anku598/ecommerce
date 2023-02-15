@@ -1,0 +1,10 @@
+fragment AttributesFragment on SelectedAttribute {
+  attribute {
+    name
+    isColor
+  }
+  values {
+    value
+    name
+  }
+}

@@ -1,0 +1,48 @@
+#import "../../products/fragments/Price.gql"
+
+fragment OrderLineDetailFragment on OrderLine {
+  __typename
+  id
+  productName
+  variantName
+  productSku
+  isShippingRequired
+  quantity
+  unitPrice {
+    ...Price
+  }
+  totalPrice {
+    ...Price
+  }
+  thumbnail(rendition: "width-200") {
+    url
+    alt
+  }
+  variant {
+    product {
+      __typename
+      slug
+      id
+      name
+      thumbnail(size: 120) {
+        url
+        alt
+      }
+      category {
+        id
+        name
+        slug
+      }
+    }
+    attributes {
+      attribute {
+        name
+        id
+      }
+      values {
+        id
+        name
+      }
+    }
+  }
+}

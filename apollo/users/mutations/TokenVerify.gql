@@ -1,0 +1,22 @@
+#import "../fragments/profileFragment.gql"
+#import "../fragments/checkoutFragment.gql"
+#import "../fragments/wishlistFragment.gql"
+
+mutation TokenVerify($token: String!) {
+  tokenVerify(token: $token) {
+    isValid
+    user {
+      ...ProfileFragment
+      checkout {
+        ...CheckoutFragment
+      }
+       wishlist {
+        ...wishlistFragment
+      }
+    }
+    accountErrors {
+      field
+      code
+    }
+  }
+}

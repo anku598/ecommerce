@@ -1,0 +1,9 @@
+overwrite: true
+schema: "https://dashboard.lovegennext.codesign.com.bd/graphql/"
+documents: "apollo/**/*.gql"
+generates:
+  graphql.d.ts:
+    - typescript-graphql-files-modules
+  graphqlTypes.ts:
+    - typescript
+    - typescript-operations

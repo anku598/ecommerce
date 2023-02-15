@@ -1,0 +1,154 @@
+// Media Query Mixins
+@mixin mediaXs {
+  @media screen and (max-width: 575.98px) {
+    @content;
+  }
+}
+
+// Small devices (landscape phones, 576px and up)
+@mixin mediaSm {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mediaMd {
+  @media (min-width: 769px) and (max-width: 991.98px) {
+    @content;
+  }
+}
+
+@mixin mediaLg {
+  @media (min-width: 992px) and (max-width: 1170.98px) {
+    @content;
+  }
+}
+
+@mixin mediaXl {
+  @media screen and (min-width: 1171px) {
+    @content;
+  }
+}
+
+@mixin iPad {
+  @media all and (device-width: 768px) and (device-height: 1024px) and (orientation: portrait) {
+   @content
+  }
+}
+
+@mixin responsive-font($responsive, $min, $max: false, $fallback: false) {
+  $responsive-unitless: $responsive / ($responsive - $responsive + 1);
+  $dimension: if(unit($responsive) == 'vh', 'height', 'width');
+  $min-breakpoint: $min / $responsive-unitless * 100;
+  
+  @media (max-#{$dimension}: #{$min-breakpoint}) {
+    font-size: $min;
+  }
+  
+  @if $max {
+    $max-breakpoint: $max / $responsive-unitless * 100;
+    
+    @media (min-#{$dimension}: #{$max-breakpoint}) {
+      font-size: $max;
+    }
+  }
+  
+  @if $fallback {
+    font-size: $fallback;
+  }
+  
+  font-size: $responsive;
+}
+
+
+// Water Mark Mixin
+
+@mixin watermark {
+  position: absolute;
+  top: 20%;
+  text-indent: -1%;
+  transform: translateY(-50%);
+  text-transform: uppercase;
+  // overflow: hidden;
+  content: '';
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: calc(14vw - 16px);
+  text-align: center;
+  margin-left: 5%;
+  white-space: nowrap;
+  // width: 100%;
+  z-index: 2;
+  color: rgba(212, 212, 212, 0.18);
+
+  @include mediaSm {
+    display: none;
+  }
+}
+
+@mixin productCategory {
+  font-size: 0.91rem;
+  letter-spacing: 1.3px;
+  font-family: $font-family-h;
+  font-weight: 500;
+  color: #919191;
+  text-transform: uppercase;
+
+  @include mediaXs {
+    font-size: 0.6rem;
+  } 
+}
+
+@mixin productTitle {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 6px 0 14px;
+  font-family: $font-family-h;
+  font-weight: 400;
+  color: #2E2E2E;
+  text-transform: capitalize;
+  @include mediaXs {
+    font-size: 0.8rem;
+    margin: 3px 0 3px;
+  }
+}
+
+@mixin productPrice {
+  font-size: 1.1rem;
+  font-family: $font-family-h;
+  font-weight: 300;
+  color: #000;
+  @include mediaXs {
+    font-size: 0.75rem;
+  }
+}
+
+@mixin Button {
+  position: relative;
+  cursor: pointer;
+  font-family: $font-family-h;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0;
+  width: 174px;
+  height: 40px;
+  background: #000;
+  outline: none;
+  box-shadow: none;
+  text-transform: uppercase;
+  border: none;
+
+  &:active,
+  &:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+
+
+// Variables 
+
+$section-margin: 80px;
+$banner-height-calc:170px;

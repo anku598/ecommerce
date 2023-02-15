@@ -1,0 +1,16 @@
+#import "../../category/fragments/CategoryBasic.gql"
+#import "../../collection/fragments/CollectionBasic.gql"
+
+fragment BasicProductFields on Product {
+  id
+  name
+  slug
+  isAvailable
+  isAvailableForPurchase
+  category {
+    ...CategoryBasic
+  }
+  collections {
+    ...CollectionBasic
+  }
+}

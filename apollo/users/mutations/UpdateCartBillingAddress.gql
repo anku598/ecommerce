@@ -1,0 +1,14 @@
+mutation UpdateCartBillingAddress($id: ID!, $billing: AddressInput!) {
+  billing: checkoutBillingAddressUpdate(
+    checkoutId: $id
+    billingAddress: $billing
+  ) {
+    checkout {
+      id
+    }
+    checkoutErrors {
+      field
+      message
+    }
+  }
+}

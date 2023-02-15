@@ -1,0 +1,15 @@
+#import "../fragments/addressFragment.gql"
+
+mutation AddressUpdate($input: AddressInput!, $id: ID!) {
+  operation: accountAddressUpdate(input: $input, id: $id) {
+    address {
+      id
+      ...AddressFragment
+    }
+    accountErrors {
+      field
+      code
+      message
+    }
+  }
+}

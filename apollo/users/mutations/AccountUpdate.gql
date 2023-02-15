@@ -1,0 +1,13 @@
+#import "../fragments/profileFragment.gql"
+
+mutation AccountUpdate($input: AccountInput!) {
+  accountUpdate(input: $input) {
+    accountErrors {
+      code
+      message
+    }
+    user {
+      ...ProfileFragment
+    }
+  }
+}

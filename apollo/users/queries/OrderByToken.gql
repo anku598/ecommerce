@@ -1,0 +1,7 @@
+#import "../fragments/orderDetailFragment.gql"
+
+query OrderByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    ...OrderDetailFragment
+  }
+}

@@ -1,0 +1,12 @@
+#import "../fragments/addressFragment.gql"
+
+query Addresses {
+  me {
+    id
+    addresses {
+      ...AddressFragment
+      isDefaultBillingAddress
+      isDefaultShippingAddress
+    }
+  }
+}

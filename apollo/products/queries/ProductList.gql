@@ -1,0 +1,12 @@
+#import "../fragments/ProductListFragment.gql"
+
+query ProductList(
+  $filter: ProductFilterInput
+  $after: String
+  $pageSize: Int
+  $sortBy: ProductOrder
+) {
+  products(after: $after, first: $pageSize, sortBy: $sortBy, filter: $filter) {
+    ...ProductListFragment
+  }
+}

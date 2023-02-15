@@ -1,0 +1,21 @@
+fragment ProductPricingField on Product {
+  pricing {
+    onSale
+    priceRangeUndiscounted {
+      start {
+        ...Price
+      }
+      stop {
+        ...Price
+      }
+    }
+    priceRange {
+      start {
+        ...Price
+      }
+      stop {
+        ...Price
+      }
+    }
+  }
+}

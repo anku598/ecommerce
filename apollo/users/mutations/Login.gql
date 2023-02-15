@@ -1,0 +1,23 @@
+#import "../fragments/profileFragment.gql"
+#import "../fragments/checkoutFragment.gql"
+#import "../fragments/wishlistFragment.gql"
+
+mutation LoginMutation($email: String!, $password: String!) {
+  tokenCreate(email: $email, password: $password) {
+    token
+
+    user {
+      ...ProfileFragment
+      checkout {
+        ...CheckoutFragment
+      }
+      wishlist {
+      ...wishlistFragment
+    }
+    }
+    accountErrors {
+      field
+      message
+    }
+  }
+}

@@ -1,0 +1,16 @@
+fragment AddressFragment on Address {
+  id
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  city
+  cityArea
+  countryArea
+  postalCode
+  country {
+    country
+    code
+  }
+  phone
+}

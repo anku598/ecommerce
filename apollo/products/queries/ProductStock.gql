@@ -1,0 +1,8 @@
+query ProductStock($slug: String) {
+  product(slug: $slug) {
+    id
+    slug
+    isAvailable
+    isAvailableForPurchase
+  }
+}

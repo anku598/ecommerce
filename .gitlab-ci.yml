@@ -1,0 +1,236 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - sudo chown -R gitlab-runner:gitlab-runner .
+
+after_script:
+  - sudo chown -R gitlab-runner:gitlab-runner .
+
+latest-build:
+  stage: build
+  script:
+    - docker pull registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker build --pull -t registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest ./
+    - docker push registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker rmi registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - master
+
+development:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DPK" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEVELOPMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_DEV_ENV root@$DEVELOPMENT_SERVER_IP:/www/LoveGen/lovegencom.frontend.dev.env
+    - ssh root@$DEVELOPMENT_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontend && docker-compose stop frontend && docker-compose up -d frontend; rm -r frontend/_nuxt/ &> /dev/null; docker cp LoveGen_frontend:/app/.nuxt/dist/client frontend/_nuxt; sleep 30s && chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /deploy/
+
+dev-manual-deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DPK" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEVELOPMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_DEV_ENV root@$DEVELOPMENT_SERVER_IP:/www/LoveGen/lovegencom.frontend.dev.env
+    - ssh root@$DEVELOPMENT_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontend && docker-compose stop frontend && docker-compose up -d frontend; rm -r frontend/_nuxt/ &> /dev/null; docker cp LoveGen_frontend:/app/.nuxt/dist/client frontend/_nuxt; sleep 30s && chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - master
+  when: manual
+
+fix-permission-latest:
+  stage: deploy
+  when: manual
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DPK" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEVELOPMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh root@$DEVELOPMENT_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - master
+
+.deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DPK_PROD" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh root@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontend && docker-compose stop frontend && docker-compose up -d frontend; rm -r frontend/_nuxt/ &> /dev/null; docker cp HONGBAO_frontend:/app/.nuxt/dist/client frontend/_nuxt; sleep 10s && chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /deploy/
+
+prod-build:
+  stage: build
+  script:
+    - docker pull registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker build --pull -t registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stable ./
+    - docker push registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stable
+    - docker rmi registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker rmi registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stable
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+
+prod-deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_KEY" | tr -d '\r' > ~/.ssh/id_rsa_lovegen_prod
+    - chmod 600 ~/.ssh/id_rsa_lovegen_prod
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa_lovegen_prod
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_PROD_ENV ubuntu@$PRODUCTION_SERVER_IP:/www/LoveGen/lovegencom.frontend.prod.env
+    - ssh ubuntu@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontend && docker-compose stop frontend && docker-compose up -d frontend; rm -r frontend/_nuxt/ &> /dev/null; docker cp LoveGen_frontend:/app/.nuxt/dist/client frontend/_nuxt; sleep 30s && sudo chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /deploy/
+
+prod-manual-deploy:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_KEY" | tr -d '\r' > ~/.ssh/id_rsa_lovegen_prod
+    - chmod 600 ~/.ssh/id_rsa_lovegen_prod
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa_lovegen_prod
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_PROD_ENV ubuntu@$PRODUCTION_SERVER_IP:/www/LoveGen/lovegencom.frontend.prod.env
+    - ssh ubuntu@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontend && docker-compose stop frontend && docker-compose up -d frontend; rm -r frontend/_nuxt/ &> /dev/null; docker cp LoveGen_frontend:/app/.nuxt/dist/client frontend/_nuxt; sleep 30s && sudo chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+  when: manual
+
+.prod-build-bd:
+  stage: build
+  script:
+    - cat $FRONTEND_PROD_ENV_BD
+    - cp -rv $FRONTEND_PROD_ENV_BD ".env"
+    - docker pull registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker build --pull -t registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stablebd ./
+    - docker push registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stablebd
+    - docker rmi registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:latest
+    - docker rmi registry.gitlab.com/codesigntheory/lovegenprojects/lovegen-frontend:stablebd
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+
+prod-deploy-bd:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_KEY" | tr -d '\r' > ~/.ssh/id_rsa_lovegen_prod
+    - chmod 600 ~/.ssh/id_rsa_lovegen_prod
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa_lovegen_prod
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_PROD_ENV_BD ubuntu@$PRODUCTION_SERVER_IP:/www/LoveGen/lovegenbdcom.frontend.prod.env
+    - ssh ubuntu@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontendbd && docker-compose stop frontendbd && docker-compose up -d frontendbd; rm -r frontendbd/_nuxt/ &> /dev/null; docker cp LoveGen_frontend_bd:/app/.nuxt/dist/client frontendbd/_nuxt; sleep 30s && sudo chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /deploy/
+
+prod-manual-deploy-bd:
+  stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_KEY" | tr -d '\r' > ~/.ssh/id_rsa_lovegen_prod
+    - chmod 600 ~/.ssh/id_rsa_lovegen_prod
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa_lovegen_prod
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - scp -rv $FRONTEND_PROD_ENV_BD ubuntu@$PRODUCTION_SERVER_IP:/www/LoveGen/lovegenbdcom.frontend.prod.env
+    - ssh ubuntu@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && docker-compose pull frontendbd && docker-compose stop frontendbd && docker-compose up -d frontendbd; rm -r frontendbd/_nuxt/ &> /dev/null; docker cp LoveGen_frontend_bd:/app/.nuxt/dist/client frontendbd/_nuxt; sleep 30s && sudo chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable
+  when: manual
+
+fix-permission-prod:
+  stage: deploy
+  when: manual
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$PRODUCTION_KEY" | tr -d '\r' > ~/.ssh/id_rsa_lovegen_prod
+    - chmod 600 ~/.ssh/id_rsa_lovegen_prod
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa_lovegen_prod
+    - ssh-keyscan -H $PRODUCTION_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh ubuntu@$PRODUCTION_SERVER_IP "export COMPOSE_INTERACTIVE_NO_CLI=1 && cd /www/LoveGen && sudo chmod go+w socket/*.sock; export COMPOSE_INTERACTIVE_NO_CLI=0"
+  tags:
+    - docker
+    - build
+  only:
+    refs:
+      - stable

@@ -1,0 +1,14 @@
+declare module "vue-awesome-swiper*";
+declare module "gsap/all*";
+declare module "gsap*";
+declare module "scrollmagic*";
+declare module "vue-parallaxy*";
+declare module "debounce*";
+declare module "vue-disqus*";
+declare module "vuejs-paginate*";
+declare module "vee-validate/dist/vee-validate.full.esm*";
+declare module "swiper*";
+declare module "vue-popperjs*";
+declare module "vue-video*";
+declare module "vue-plyr*";
+declare module "draftjs-to-html*";

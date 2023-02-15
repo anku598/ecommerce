@@ -1,0 +1,15 @@
+#import "../fragments/addressFragment.gql"
+
+fragment ProfileFragment on User {
+  id
+  firstName
+  lastName
+  email
+  gender
+  defaultBillingAddress {
+    ...AddressFragment
+  }
+  defaultShippingAddress {
+    ...AddressFragment
+  }
+}

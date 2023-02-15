@@ -1,0 +1,6 @@
+fragment AttributeBasic on Attribute {
+  id
+  name
+  slug
+  isColor
+}

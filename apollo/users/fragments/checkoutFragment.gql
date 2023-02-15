@@ -1,0 +1,92 @@
+#import "../../products/fragments/Price.gql"
+#import "../fragments/paymentGatewayFragment.gql"
+#import "../fragments/shippingMethodFragment.gql"
+#import "../fragments/addressFragment.gql"
+
+fragment CheckoutFragment on Checkout {
+  __typename
+  id
+  lines {
+    __typename
+    id
+    variant {
+      __typename
+      id
+      sku
+      pricing {
+        onSale
+        discount {
+          ...Price
+        }
+        price {
+          ...Price
+        }
+      }
+      product {
+        __typename
+        slug
+        id
+        name
+        thumbnail(size: 120) {
+          url
+          alt
+        }
+        category {
+          id
+          name
+          slug
+        }
+      }
+      attributes {
+        attribute {
+          name
+          id
+        }
+        values {
+          id
+          name
+        }
+      }
+    }
+
+    quantity
+    totalPrice {
+      ...Price
+    }
+  }
+  subtotalPrice {
+    ...Price
+  }
+  totalPriceLocalCurrency {
+    ...Price
+  }
+  totalPrice {
+    ...Price
+  }
+  shippingPriceLocalCurrency {
+    ...Price
+  }
+  discount {
+    amount
+    currency
+  }
+  discountName
+  voucherCode
+  availableShippingMethods {
+    ...ShippingMethodFragment
+  }
+  availablePaymentGateways {
+    ...PaymentGatewayFragment
+  }
+  shippingMethod {
+    id
+    name
+  }
+  shippingAddress {
+    ...AddressFragment
+  }
+  billingAddress {
+    ...AddressFragment
+  }
+  token
+}

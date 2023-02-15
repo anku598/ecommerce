@@ -1,0 +1,74 @@
+#import "../../category/fragments/CategoryBasic.gql"
+#import "../fragments/AttributeBasic.gql"
+#import "../../collection/fragments/CollectionBasic.gql"
+#import "../../common/fragments/AttributeValueBasic.gql"
+query OnSale {
+  categories(first: 100) {
+    edges {
+      node {
+        ...CategoryBasic
+        level
+        products {
+          totalCount
+        }
+        parent {
+          ...CategoryBasic
+          level
+          ancestors(first: 10) {
+            edges {
+              node {
+                ...CategoryBasic
+                level
+              }
+            }
+          }
+        }
+        children(first: 100) {
+          edges {
+            node {
+              products {
+                totalCount
+              }
+              ...CategoryBasic
+              level
+              children(first: 100) {
+                edges {
+                  node {
+                    products {
+                      totalCount
+                    }
+                    ...CategoryBasic
+                    level
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  attributes(
+    first: 100
+    filter: { filterableInStorefront: true, stockOnly: true }
+  ) {
+    edges {
+      node {
+        ...AttributeBasic
+        values(stockOnly: true) {
+          ...AttributeValueBasic
+        }
+      }
+    }
+  }
+  collections(first: 100, filter: { published: PUBLISHED }) {
+    edges {
+      node {
+        ...CollectionBasic
+        products {
+          totalCount
+        }
+      }
+    }
+  }
+}

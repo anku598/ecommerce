@@ -1,0 +1,13 @@
+#import "../fragments/checkoutFragment.gql"
+
+mutation RemoveFromCart($id: ID!, $lineId: ID!) {
+  checkoutLineDelete(checkoutId: $id, lineId: $lineId) {
+    checkout {
+      ...CheckoutFragment
+    }
+    checkoutErrors {
+      code
+      message
+    }
+  }
+}

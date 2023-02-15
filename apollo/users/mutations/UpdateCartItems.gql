@@ -1,0 +1,13 @@
+#import "../fragments/checkoutFragment.gql"
+
+mutation UpdateCartItems($id: ID!, $input: [CheckoutLineInput]!) {
+  checkoutLinesUpdate(checkoutId: $id, lines: $input) {
+    checkout {
+      ...CheckoutFragment
+    }
+    checkoutErrors {
+      code
+      message
+    }
+  }
+}

@@ -1,0 +1,30 @@
+mutation UpdateCartAddresses(
+  $id: ID!
+  $shipping: AddressInput!
+  $billing: AddressInput!
+) {
+  shipping: checkoutShippingAddressUpdate(
+    checkoutId: $id
+    shippingAddress: $shipping
+  ) {
+    checkout {
+      id
+    }
+    checkoutErrors {
+      field
+      message
+    }
+  }
+  billing: checkoutBillingAddressUpdate(
+    checkoutId: $id
+    billingAddress: $billing
+  ) {
+    checkout {
+      id
+    }
+    checkoutErrors {
+      field
+      message
+    }
+  }
+}

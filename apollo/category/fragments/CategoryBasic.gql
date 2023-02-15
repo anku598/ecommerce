@@ -1,0 +1,10 @@
+#import "../../common/fragments/Metadata.gql"
+
+fragment CategoryBasic on Category {
+  id
+  name
+  slug
+  metadata {
+    ...Metadata
+  }
+}

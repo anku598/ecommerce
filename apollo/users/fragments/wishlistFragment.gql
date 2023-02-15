@@ -1,0 +1,8 @@
+#import "../../products/fragments/BasicProductFields.gql"
+
+fragment wishlistFragment on WishlistItem {
+  id
+  product {
+    ...BasicProductFields
+  }
+}
